@@ -1,26 +1,48 @@
 import React from 'react';
-import logo from './logo.svg';
+import axios from 'axios';
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.Component {
+
+  constructor(props){
+    super(props);
+    this.state = {
+      giph1: []
+    }
+  }
+
+  searchGiphy = (event) => {
+    event.preventDefault();
+    let userInput = event.target[0].value;
+    console.log(userInput);
+
+    axios.get('http://api.giphy.com/v1/gifs/search?q='+userInput+'&api_key=JXDaYHMk25VwWeB2NhyLaPkdsp99JYCW')
+    .then((resolve) => {
+      this.setState({giph1: resolve.data.data})
+      
+    })
+    .catch((err) => console.log(err));
+  }
+
+  render(){
+      let elems = [];
+      for(let e of this.state.giph1) {
+        elems.push(<img src={e.images.downsized.url} />);
+      }
+
+
+      return (
+        <div> 
+          <form onSubmit={this.searchGiphy}>  
+            <h1>Search</h1>
+            <input type="text" />
+          </form>
+
+          {elems}
+        </div>
+      );
+
+  }
 }
 
 export default App;
